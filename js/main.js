@@ -26,21 +26,20 @@ new Vue({
             const realCards = firstColumn.cards.filter((c) => !c.isPhantom);
             const phantomCard = firstColumn.cards.find((c) => c.isPhantom);
 
-            if (phantomCard && phantomCard.title.trim() && phantomCard.items.length >= 3) {
-                phantomCard.id = Date.now();
-                phantomCard.isPhantom = false;
+            if (phantomCard && realCards.length >= 3) {
+                firstColumn.cards = firstColumn.cards.filter((c) => !c.isPhantom);
+                return;
+            }
 
-                // Только если обычных карточек < 3, добавляем новую фантомную
-                if (realCards.length < 2) {
-                    firstColumn.cards.push({
-                        id: "phantom",
-                        title: "",
-                        items: [],
-                        newItemText: "",
-                        completedAt: null,
-                        isPhantom: true,
-                    });
-                }
+            if (!phantomCard && realCards.length < 3) {
+                firstColumn.cards.push({
+                    id: "phantom",
+                    title: "",
+                    items: [],
+                    newItemText: "",
+                    completedAt: null,
+                    isPhantom: true,
+                });
             }
         },
 
@@ -49,7 +48,48 @@ new Vue({
                 card.items.push({ text: card.newItemText, done: false });
                 card.newItemText = "";
                 this.checkPhantomCard();
+                this.checkTransformToReal(card);
             }
+        },
+
+        checkTransformToReal(card) {
+            if (card.isPhantom && card.title.trim() && card.items.length >= 3) {
+                card.id = Date.now();
+                card.isPhantom = false;
+                this.checkPhantomCard();
+            }
+        },
+
+        checkCardProgress(card) {
+            const totalItems = card.items.length;
+            const completedItems = card.items.filter((item) => item.done).length;
+
+            if (totalItems === 0) return;
+
+            const progress = completedItems / totalItems;
+
+            if (progress === 1) {
+                this.moveCard(card, 3);
+                card.completedAt = new Date().toLocaleString();
+            } else if (progress > 0.49) {
+                this.moveCard(card, 2);
+            }
+        },
+
+        moveCard(card, targetColumnId) {
+            const targetColumn = this.columns.find((col) => col.id === targetColumnId);
+
+            if (targetColumnId === 2 && targetColumn.cards.length >= 5) {
+                return;
+            }
+
+            this.columns.forEach((column) => {
+                column.cards = column.cards.filter((c) => c.id !== card.id);
+            });
+
+            targetColumn.cards.push(card);
+
+            this.checkPhantomCard();
         },
     },
 });
