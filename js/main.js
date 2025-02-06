@@ -19,6 +19,7 @@ new Vue({
             { id: 2, title: "Столбец 2", cards: [] },
             { id: 3, title: "Столбец 3", cards: [] },
         ],
+        isFirstColumnLocked: false,
     },
     methods: {
         checkPhantomCard() {
@@ -74,6 +75,10 @@ new Vue({
             } else if (progress > 0.49) {
                 this.moveCard(card, 2);
             }
+
+            if (this.columns[1].cards.length >= 5 && progress > 0.49) {
+                this.isFirstColumnLocked = true;
+            }
         },
 
         moveCard(card, targetColumnId) {
@@ -90,6 +95,18 @@ new Vue({
             targetColumn.cards.push(card);
 
             this.checkPhantomCard();
+
+            if (this.columns[1].cards.some(c => c.items.every(item => item.done))) {
+                this.isFirstColumnLocked = false;
+            }
+
+            if (this.columns[1].cards.length < 5) {
+                this.isFirstColumnLocked = false;
+            }
         },
+
+        isFirstColumnEditable() {
+            return !this.isFirstColumnLocked;
+        }
     },
 });
