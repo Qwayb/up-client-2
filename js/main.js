@@ -23,29 +23,32 @@ new Vue({
     methods: {
         checkPhantomCard() {
             const firstColumn = this.columns[0];
+            const realCards = firstColumn.cards.filter((c) => !c.isPhantom);
             const phantomCard = firstColumn.cards.find((c) => c.isPhantom);
 
             if (phantomCard && phantomCard.title.trim() && phantomCard.items.length >= 3) {
-                phantomCard.id = Date.now(); // Присваиваем уникальный ID
-                phantomCard.isPhantom = false; // Карточка становится настоящей
+                phantomCard.id = Date.now();
+                phantomCard.isPhantom = false;
 
-                // Добавляем новую фантомную карточку
-                firstColumn.cards.push({
-                    id: "phantom",
-                    title: "",
-                    items: [],
-                    newItemText: "",
-                    completedAt: null,
-                    isPhantom: true,
-                });
+                // Только если обычных карточек < 3, добавляем новую фантомную
+                if (realCards.length < 2) {
+                    firstColumn.cards.push({
+                        id: "phantom",
+                        title: "",
+                        items: [],
+                        newItemText: "",
+                        completedAt: null,
+                        isPhantom: true,
+                    });
+                }
             }
         },
 
         addItemToCard(card) {
             if (card.newItemText.trim()) {
                 card.items.push({ text: card.newItemText, done: false });
-                card.newItemText = ""; // Очистить поле ввода
-                this.checkPhantomCard(); // Проверить условие для превращения в обычную карточку
+                card.newItemText = "";
+                this.checkPhantomCard();
             }
         },
     },
