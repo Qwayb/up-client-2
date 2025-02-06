@@ -1,4 +1,4 @@
-    new Vue({
+new Vue({
     el: "#app",
     data: {
         columns: [
@@ -45,13 +45,18 @@
         },
 
         addItemToCard(card) {
-            if (card.newItemText.trim()) {
+            if (card.newItemText.trim() && this.isCardInFirstColumn(card)) {
                 card.items.push({ text: card.newItemText, done: false });
                 card.newItemText = "";
                 this.checkPhantomCard();
                 this.checkTransformToReal(card);
             }
         },
+
+        isCardInFirstColumn(card) {
+            return this.columns[0].cards.includes(card);
+        },
+
 
         checkTransformToReal(card) {
             if (card.isPhantom && card.title.trim() && card.items.length >= 3) {
@@ -98,6 +103,7 @@
 
             if (targetColumnId === 3) {
                 card.isLocked = true;
+                card.completedAt = new Date().toLocaleString();
             }
 
             if (this.columns[1].cards.some(c => c.items.every(item => item.done))) {

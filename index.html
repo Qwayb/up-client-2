@@ -44,10 +44,16 @@
                             <span>{{ item.text }}</span>
                         </li>
                     </ul>
-                    <input v-if="card.items.length < 5 && !card.isLocked"
+
+                    <input v-if="card.items.length < 5 && isCardInFirstColumn(card)"
                            v-model="card.newItemText" placeholder="Добавить пункт..."
-                           @keydown.enter="addItemToCard(card)" :disabled="card.isLocked"
+                           @keydown.enter="addItemToCard(card)"
                            class="phantom-input">
+
+                    <div v-if="card.completedAt && card.isLocked" class="completion-time">
+                        Время добавления: {{ card.completedAt }}
+                    </div>
+
                 </div>
             </div>
         </transition-group>
