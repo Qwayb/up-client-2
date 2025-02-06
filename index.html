@@ -22,7 +22,7 @@
 
                 <!-- Для фантомной карточки -->
                 <div v-if="card.isPhantom">
-                    <input v-model="card.title" placeholder="Заголовок..." @input="checkPhantomCard">
+                    <input class="phantom-input-title" v-model="card.title" placeholder="Заголовок..." @input="checkPhantomCard">
 
                     <!-- Строки для ввода пунктов -->
                     <div v-for="(item, index) in card.items" :key="index">
