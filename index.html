@@ -5,22 +5,31 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="vue.js"></script>
-    <script src="main.js"></script>
+    <script defer src="js/vue.js"></script>
+    <script defer src="js/main.js"></script>
     <title>Заметки</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
     <div id="app">
-        <div class="column">
-            <h3>Столбец 1</h3>
-        </div>
-        <div class="column">
-            <h3>Столбец 2</h3>
-        </div>
-        <div class="column">
-            <h3>Столбец 3</h3>
+        <div class="column" v-for="column in columns" :key="column.id">
+            <h3>{{ column.title }}</h3>
+
+            <transition-group name="fade" tag="div">
+                <div class="card" v-for="card in column.cards" :key="card.id">
+                    <input v-if="card.isPhantom" type="text" v-model="card.title" placeholder="Введите заголовок" @input="checkPhantomCard">
+                    <h4 v-else>{{ card.title }}</h4>
+
+                    <ul>
+                        <li v-for="item in card.items" :key="item.text">
+                            <input type="checkbox" v-model="item.done"> {{ item.text }}
+                        </li>
+                    </ul>
+
+                    <button v-if="card.isPhantom" @click="addItemToPhantom">Добавить пункт</button>
+                </div>
+            </transition-group>
         </div>
     </div>
 
