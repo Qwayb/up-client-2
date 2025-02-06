@@ -12,26 +12,53 @@
 </head>
 <body>
 
-    <div id="app">
-        <div class="column" v-for="column in columns" :key="column.id">
-            <h3>{{ column.title }}</h3>
+<div id="app">
+    <div class="column" v-for="column in columns" :key="column.id">
+        <h3>{{ column.title }}</h3>
 
-            <transition-group name="fade" tag="div">
-                <div class="card" v-for="card in column.cards" :key="card.id">
-                    <input v-if="card.isPhantom" type="text" v-model="card.title" placeholder="Введите заголовок" @input="checkPhantomCard">
-                    <h4 v-else>{{ card.title }}</h4>
+        <transition-group name="fade" tag="div">
+            <div class="card" v-for="card in column.cards" :key="card.id"
+                 @mouseenter="card.isHovered = true" @mouseleave="card.isHovered = false">
+
+                <!-- Для фантомной карточки -->
+                <div v-if="card.isPhantom">
+                    <input v-model="card.title" placeholder="Заголовок..." @input="checkPhantomCard">
+
+                    <!-- Строки для ввода пунктов -->
+                    <div v-for="(item, index) in card.items" :key="index">
+                        <input v-model="item.text" placeholder="Пункт..."
+                               @keydown.enter="addItemToCard(card)"
+                               class="phantom-input">
+                    </div>
+
+                    <!-- Фантомная строка -->
+                    <input v-if="card.items.length < 5 && card.isHovered"
+                           v-model="card.newItemText" placeholder="Пункт..."
+                           @keydown.enter="addItemToCard(card)"
+                           class="phantom-input">
+                </div>
+
+                <!-- Для обычных карточек -->
+                <div v-else>
+                    <h4>{{ card.title }}</h4>
 
                     <ul>
                         <li v-for="item in card.items" :key="item.text">
-                            <input type="checkbox" v-model="item.done"> {{ item.text }}
+                            <input type="checkbox" v-model="item.done">
+                            <span>{{ item.text }}</span>
                         </li>
                     </ul>
 
-                    <button v-if="card.isPhantom" @click="addItemToPhantom">Добавить пункт</button>
+                    <!-- Поле для добавления новых пунктов -->
+                    <input v-if="card.items.length < 5"
+                           v-model="card.newItemText" placeholder="Добавить пункт..."
+                           @keydown.enter="addItemToCard(card)"
+                           class="phantom-input">
                 </div>
-            </transition-group>
-        </div>
+            </div>
+        </transition-group>
     </div>
+</div>
 
 </body>
 </html>

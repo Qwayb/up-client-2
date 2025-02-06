@@ -1,3 +1,96 @@
+/*body {*/
+/*    font-family: Arial, sans-serif;*/
+/*    background: #f5f5f5;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    height: 100vh;*/
+/*    margin: 0;*/
+/*}*/
+/*#app {*/
+/*    display: flex;*/
+/*    gap: 20px;*/
+/*}*/
+/*.column {*/
+/*    background: white;*/
+/*    padding: 15px;*/
+/*    border-radius: 12px;*/
+/*    width: 200px;*/
+/*    min-height: 300px;*/
+/*    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*!*.card {*!*/
+/*!*    background: white;*!*/
+/*!*    padding: 10px;*!*/
+/*!*    border-radius: 12px;*!*/
+/*!*    margin-top: 10px;*!*/
+/*!*    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);*!*/
+/*!*}*!*/
+
+/*.timestamp {*/
+/*    font-size: 12px;*/
+/*    color: gray;*/
+/*    margin-top: 5px;*/
+/*}*/
+
+/*.fade-enter-active, .fade-leave-active {*/
+/*    transition: opacity 0.5s ease, transform 0.3s ease;*/
+/*}*/
+/*.fade-enter, .fade-leave-to {*/
+/*    opacity: 0;*/
+/*    transform: translateY(10px);*/
+/*}*/
+
+/*.card {*/
+/*    background: white;*/
+/*    border-radius: 12px;*/
+/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+/*    padding: 16px;*/
+/*    transition: transform 0.2s ease, opacity 0.2s ease;*/
+/*}*/
+
+/*.card:hover {*/
+/*    transform: translateY(-3px);*/
+/*}*/
+
+/*input[type="text"] {*/
+/*    border: none;*/
+/*    outline: none;*/
+/*    background: none;*/
+/*    font-size: 16px;*/
+/*    width: 100%;*/
+/*}*/
+
+/*button {*/
+/*    background: #0078D7;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    padding: 8px 12px;*/
+/*    border-radius: 6px;*/
+/*    cursor: pointer;*/
+/*    transition: background 0.2s;*/
+/*}*/
+
+/*button:hover {*/
+/*    background: #005ea6;*/
+/*}*/
+
+/*.phantom-input {*/
+/*    border: none;*/
+/*    outline: none;*/
+/*    background: none;*/
+/*    font-size: 16px;*/
+/*    width: 100%;*/
+/*    margin-top: 10px;*/
+/*    color: rgba(0, 0, 0, 0.25);*/
+/*    text-decoration: underline;*/
+/*}*/
+
+/*.phantom-input.hidden {*/
+/*    display: none;*/
+/*}*/
+
 body {
     font-family: Arial, sans-serif;
     background: #f5f5f5;
@@ -22,16 +115,47 @@ body {
 
 .card {
     background: white;
-    padding: 10px;
     border-radius: 12px;
-    margin-top: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.timestamp {
-    font-size: 12px;
-    color: gray;
+.card:hover {
+    transform: translateY(-3px);
+}
+
+input[type="text"], textarea {
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 16px;
+    width: 100%;
+}
+
+textarea {
+    height: 30px;
     margin-top: 5px;
+}
+
+button {
+    background: #0078D7;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #005ea6;
+}
+
+.phantom-input {
+    display: block;
+    margin-top: 5px;
+    resize: none;
 }
 
 .fade-enter-active, .fade-leave-active {

@@ -10,6 +10,7 @@ new Vue({
                         id: "phantom",
                         title: "",
                         items: [],
+                        newItemText: "",
                         completedAt: null,
                         isPhantom: true,
                     },
@@ -25,23 +26,26 @@ new Vue({
             const phantomCard = firstColumn.cards.find((c) => c.isPhantom);
 
             if (phantomCard && phantomCard.title.trim() && phantomCard.items.length >= 3) {
-                phantomCard.id = Date.now();
-                phantomCard.isPhantom = false;
+                phantomCard.id = Date.now(); // Присваиваем уникальный ID
+                phantomCard.isPhantom = false; // Карточка становится настоящей
 
+                // Добавляем новую фантомную карточку
                 firstColumn.cards.push({
                     id: "phantom",
                     title: "",
                     items: [],
+                    newItemText: "",
                     completedAt: null,
                     isPhantom: true,
                 });
             }
         },
-        addItemToPhantom() {
-            const phantomCard = this.columns[0].cards.find((c) => c.isPhantom);
-            if (phantomCard) {
-                phantomCard.items.push({ text: "", done: false });
-                this.checkPhantomCard();
+
+        addItemToCard(card) {
+            if (card.newItemText.trim()) {
+                card.items.push({ text: card.newItemText, done: false });
+                card.newItemText = ""; // Очистить поле ввода
+                this.checkPhantomCard(); // Проверить условие для превращения в обычную карточку
             }
         },
     },
