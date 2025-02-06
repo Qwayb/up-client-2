@@ -40,13 +40,13 @@
                     <h4>{{ card.title }}</h4>
                     <ul>
                         <li v-for="item in card.items" :key="item.text">
-                            <input type="checkbox" v-model="item.done" @change="checkCardProgress(card)">
+                            <input type="checkbox" v-model="item.done" @change="checkCardProgress(card)" :disabled="card.isLocked">
                             <span>{{ item.text }}</span>
                         </li>
                     </ul>
-                    <input v-if="card.items.length < 5"
+                    <input v-if="card.items.length < 5 && !card.isLocked"
                            v-model="card.newItemText" placeholder="Добавить пункт..."
-                           @keydown.enter="addItemToCard(card)" :disabled="!isFirstColumnEditable()"
+                           @keydown.enter="addItemToCard(card)" :disabled="card.isLocked"
                            class="phantom-input">
                 </div>
             </div>

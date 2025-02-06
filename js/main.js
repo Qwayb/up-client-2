@@ -1,4 +1,4 @@
-new Vue({
+    new Vue({
     el: "#app",
     data: {
         columns: [
@@ -95,6 +95,10 @@ new Vue({
             targetColumn.cards.push(card);
 
             this.checkPhantomCard();
+
+            if (targetColumnId === 3) {
+                card.isLocked = true;
+            }
 
             if (this.columns[1].cards.some(c => c.items.every(item => item.done))) {
                 this.isFirstColumnLocked = false;
