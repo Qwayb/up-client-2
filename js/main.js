@@ -12,6 +12,7 @@ new Vue({
             deep: true,
             handler() {
                 this.saveToLocalStorage();
+                this.checkFirstColumnLock();
             },
         },
     },
@@ -43,6 +44,20 @@ new Vue({
         },
         saveToLocalStorage() {
             localStorage.setItem("vue_notes_columns", JSON.stringify(this.columns));
+        },
+        checkFirstColumnLock() {
+            const secondColumn = this.columns[1];
+            const firstColumn = this.columns[0];
+            const hasOver50PercentCard = firstColumn.cards.some(card => {
+                const completedItems = card.items.filter(item => item.done).length;
+                return card.items.length > 0 && (completedItems / card.items.length) > 0.49;
+            });
+            
+            if (secondColumn.cards.length >= 5 && hasOver50PercentCard) {
+                this.isFirstColumnLocked = true;
+            } else if (this.columns[2].cards.some(c => c.items.length > 0)) {
+                this.isFirstColumnLocked = false;
+            }
         },
         checkPhantomCard() {
             const firstColumn = this.columns[0];
@@ -88,43 +103,34 @@ new Vue({
             const completedItems = card.items.filter((item) => item.done).length;
             if (totalItems === 0) return;
             const progress = completedItems / totalItems;
-
+        
             if (progress === 1) {
-                this.moveCard(card, 3);
                 card.completedAt = new Date().toLocaleString();
+                this.moveCard(card, 3);
             } else if (progress > 0.49) {
                 this.moveCard(card, 2);
             }
-
-            if (this.columns[1].cards.length >= 5 && progress > 0.49) {
-                this.isFirstColumnLocked = true;
-            }
+        
+            this.checkFirstColumnLock();
         },
+
         moveCard(card, targetColumnId) {
             const targetColumn = this.columns.find((col) => col.id === targetColumnId);
             if (targetColumnId === 2 && targetColumn.cards.length >= 5) {
                 return;
             }
-
+        
             this.columns.forEach((column) => {
                 column.cards = column.cards.filter((c) => c.id !== card.id);
             });
-
-            targetColumn.cards.push(card);
-            this.checkPhantomCard();
-
+        
             if (targetColumnId === 3) {
                 card.isLocked = true;
-                card.completedAt = new Date().toLocaleString();
             }
-
-            if (this.columns[1].cards.some(c => c.items.every(item => item.done))) {
-                this.isFirstColumnLocked = false;
-            }
-
-            if (this.columns[1].cards.length < 5) {
-                this.isFirstColumnLocked = false;
-            }
+        
+            targetColumn.cards.push(card);
+            this.checkPhantomCard();
+            this.checkFirstColumnLock();
         },
         isFirstColumnEditable() {
             return !this.isFirstColumnLocked;
