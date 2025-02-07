@@ -59,6 +59,7 @@ new Vue({
                 this.isFirstColumnLocked = false;
             }
         },
+
         checkPhantomCard() {
             const firstColumn = this.columns[0];
             const realCards = firstColumn.cards.filter((c) => !c.isPhantom);
@@ -79,7 +80,10 @@ new Vue({
                     isPhantom: true,
                 });
             }
+
+            // this.checkLogicViolation();
         },
+
         addItemToCard(card) {
             if (card.newItemText.trim() && this.isCardInFirstColumn(card)) {
                 card.items.push({ text: card.newItemText, done: false });
@@ -88,9 +92,11 @@ new Vue({
                 this.checkTransformToReal(card);
             }
         },
+
         isCardInFirstColumn(card) {
             return this.columns[0].cards.includes(card);
         },
+
         checkTransformToReal(card) {
             if (card.isPhantom && card.title.trim() && card.items.length >= 3) {
                 card.id = Date.now();
@@ -98,20 +104,27 @@ new Vue({
                 this.checkPhantomCard();
             }
         },
+
         checkCardProgress(card) {
             const totalItems = card.items.length;
             const completedItems = card.items.filter((item) => item.done).length;
             if (totalItems === 0) return;
             const progress = completedItems / totalItems;
-        
+
             if (progress === 1) {
                 card.completedAt = new Date().toLocaleString();
                 this.moveCard(card, 3);
             } else if (progress > 0.49) {
                 this.moveCard(card, 2);
+            } else if (progress <= 0.49 && this.isCardInColumn(card, 2)) {
+                this.moveCard(card, 1);
             }
-        
+
             this.checkFirstColumnLock();
+        },
+
+        isCardInColumn(card, columnId) {
+            return this.columns[columnId - 1].cards.includes(card);
         },
 
         moveCard(card, targetColumnId) {
@@ -119,21 +132,33 @@ new Vue({
             if (targetColumnId === 2 && targetColumn.cards.length >= 5) {
                 return;
             }
-        
+
             this.columns.forEach((column) => {
                 column.cards = column.cards.filter((c) => c.id !== card.id);
             });
-        
+
             if (targetColumnId === 3) {
                 card.isLocked = true;
             }
-        
+
             targetColumn.cards.push(card);
             this.checkPhantomCard();
             this.checkFirstColumnLock();
+            this.checkLogicViolation();
         },
+
         isFirstColumnEditable() {
             return !this.isFirstColumnLocked;
+        },
+
+        checkLogicViolation() {
+            const firstColumn = this.columns[0];
+            const realCards = firstColumn.cards.filter((c) => !c.isPhantom);
+
+            if (realCards.length > 3) {
+                alert("Логика приложения нарушена");
+            }
         }
+
     },
 });
