@@ -40,8 +40,22 @@
                     <h4>{{ card.title }}</h4>
                     <ul>
                         <li v-for="item in card.items" :key="item.text">
-                            <input type="checkbox" v-model="item.done" @change="checkCardProgress(card)" :disabled="card.isLocked">
+                            <input type="checkbox"
+                                   v-model="item.done"
+                                   @change="checkCardProgress(card)"
+                                   :disabled="!checkSubitemsProgress(item) || card.isLocked">
                             <span>{{ item.text }}</span>
+
+                            <div v-if="item.subitems.length > 0">
+                                <ul>
+                                    <li v-for="subitem in item.subitems" :key="subitem.text">
+                                        <input type="checkbox" v-model="subitem.done">
+                                        <span>{{ subitem.text }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <input v-model="item.newSubitemText" placeholder="Добавить подпункт..." @keydown.enter="addSubitemToItem(item)" class="phantom-input" :disabled="card.isLocked">
                         </li>
                     </ul>
 

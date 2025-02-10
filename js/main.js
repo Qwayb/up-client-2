@@ -52,7 +52,7 @@ new Vue({
                 const completedItems = card.items.filter(item => item.done).length;
                 return card.items.length > 0 && (completedItems / card.items.length) > 0.49;
             });
-            
+
             if (secondColumn.cards.length >= 5 && hasOver50PercentCard) {
                 this.isFirstColumnLocked = true;
             } else if (this.columns[2].cards.some(c => c.items.length > 0)) {
@@ -80,29 +80,26 @@ new Vue({
                     isPhantom: true,
                 });
             }
-
-            // this.checkLogicViolation();
         },
 
         addItemToCard(card) {
             if (card.newItemText.trim() && this.isCardInFirstColumn(card)) {
-                card.items.push({ text: card.newItemText, done: false });
+                card.items.push({ text: card.newItemText, done: false, subitems: [] });
                 card.newItemText = "";
                 this.checkPhantomCard();
                 this.checkTransformToReal(card);
             }
         },
 
-        isCardInFirstColumn(card) {
-            return this.columns[0].cards.includes(card);
+        addSubitemToItem(item) {
+            item.subitems.push({ text: item.newSubitemText, done: false });
+            item.newSubitemText = "";
+            this.checkCardProgress(card);
         },
 
-        checkTransformToReal(card) {
-            if (card.isPhantom && card.title.trim() && card.items.length >= 3) {
-                card.id = Date.now();
-                card.isPhantom = false;
-                this.checkPhantomCard();
-            }
+        checkSubitemsProgress(item) {
+            const uncompletedSubitems = item.subitems.filter(subitem => !subitem.done).length;
+            return uncompletedSubitems === 0;
         },
 
         checkCardProgress(card) {
@@ -122,6 +119,20 @@ new Vue({
 
             this.checkFirstColumnLock();
         },
+
+        isCardInFirstColumn(card) {
+            return this.columns[0].cards.includes(card);
+        },
+
+        checkTransformToReal(card) {
+            if (card.isPhantom && card.title.trim() && card.items.length >= 3) {
+                card.id = Date.now();
+                card.isPhantom = false;
+                this.checkPhantomCard();
+            }
+        },
+
+
 
         isCardInColumn(card, columnId) {
             return this.columns[columnId - 1].cards.includes(card);
@@ -144,21 +155,10 @@ new Vue({
             targetColumn.cards.push(card);
             this.checkPhantomCard();
             this.checkFirstColumnLock();
-            this.checkLogicViolation();
         },
 
         isFirstColumnEditable() {
             return !this.isFirstColumnLocked;
         },
-
-        checkLogicViolation() {
-            const firstColumn = this.columns[0];
-            const realCards = firstColumn.cards.filter((c) => !c.isPhantom);
-
-            if (realCards.length > 3) {
-                alert("Логика приложения нарушена");
-            }
-        }
-
     },
 });
